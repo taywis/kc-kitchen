@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Check, Users, ChefHat, Calculator, X, Calendar, MapPin, Clock, Truck, Coffee, AlertCircle } from 'lucide-react';
+import { Check, Users, ChefHat, Calculator, X, Calendar, MapPin, Truck, Coffee, AlertCircle, Settings } from 'lucide-react';
+import AdminPanel from './AdminPanel';
 
 interface Package {
   id: string;
@@ -36,6 +37,8 @@ interface ContactForm {
   firstName: string;
   lastName: string;
   companyName: string;
+  email: string;
+  phone: string;
   eventDate: string;
   location: string;
   deliveryMethod: 'delivery' | 'pickup';
@@ -168,10 +171,13 @@ function App() {
   const [selectedServices, setSelectedServices] = useState<AdditionalService[]>([]);
   const [totalPrice, setTotalPrice] = useState<number>(0);
   const [showContactForm, setShowContactForm] = useState<boolean>(false);
+  const [showAdminPanel, setShowAdminPanel] = useState<boolean>(false);
   const [contactForm, setContactForm] = useState<ContactForm>({
     firstName: '',
     lastName: '',
     companyName: '',
+    email: '',
+    phone: '',
     eventDate: '',
     location: '',
     deliveryMethod: 'delivery',
@@ -305,10 +311,16 @@ function App() {
     }));
   };
 
-  const handleSubmitQuote = (e: React.FormEvent) => {
+  const handleSubmitQuote = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Here you would typically send the data to your backend
-    console.log('Quote Request:', {
+    
+    try {
+      const response = await fetch('/.netlify/functions/create-invoice', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
       package: selectedPackage,
       guestCount,
       entrees: selectedEntrees,
@@ -316,11 +328,21 @@ function App() {
       additionalServices: selectedServices,
       totalPrice,
       contactInfo: contactForm
+        })
     });
     
-    // For now, just show an alert
-    alert('Thank you for your quote request! Kaycee\'s Kitchen will contact you within 24 hours.');
+      const result = await response.json();
+      
+      if (result.success) {
+        alert('Thank you for your quote request! A draft invoice has been created and Kaycee\'s Kitchen will contact you within 24 hours.');
     setShowContactForm(false);
+      } else {
+        alert('There was an error creating your quote. Please try again or contact Kaycee\'s Kitchen directly.');
+      }
+    } catch (error) {
+      console.error('Error submitting quote:', error);
+      alert('There was an error submitting your quote. Please try again or contact Kaycee\'s Kitchen directly.');
+    }
   };
 
   const groupedEntrees = entrees.reduce((acc, entree) => {
@@ -340,7 +362,16 @@ function App() {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
       {/* Header */}
       <div className="bg-gradient-to-r from-orange-600 to-orange-700 text-white py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative">
+          {/* Admin Button */}
+          <button
+            onClick={() => setShowAdminPanel(!showAdminPanel)}
+            className="absolute top-4 right-4 bg-white bg-opacity-20 hover:bg-opacity-30 text-white p-2 rounded-lg transition-all duration-200"
+            title="Admin Panel"
+          >
+            <Settings className="w-6 h-6" />
+          </button>
+          
           <div className="flex justify-center mb-4">
             <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center">
               <ChefHat className="w-8 h-8 text-orange-600" />
@@ -789,6 +820,33 @@ function App() {
                   />
                 </div>
 
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Email Address *
+                    </label>
+                    <input
+                      type="email"
+                      required
+                      value={contactForm.email}
+                      onChange={(e) => handleContactFormChange('email', e.target.value)}
+                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-orange-500 focus:ring-2 focus:ring-orange-200 outline-none transition-all duration-200"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Phone Number *
+                    </label>
+                    <input
+                      type="tel"
+                      required
+                      value={contactForm.phone}
+                      onChange={(e) => handleContactFormChange('phone', e.target.value)}
+                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-orange-500 focus:ring-2 focus:ring-orange-200 outline-none transition-all duration-200"
+                    />
+                  </div>
+                </div>
+
                 {/* Event Details */}
                 <div className="border-t border-gray-200 pt-6">
                   <h4 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
@@ -930,6 +988,9 @@ function App() {
           </div>
         </div>
       )}
+
+      {/* Admin Panel */}
+      {showAdminPanel && <AdminPanel />}
     </div>
   );
 }

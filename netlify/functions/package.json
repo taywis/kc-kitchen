@@ -1,0 +1,9 @@
+{
+  "name": "kc-kitchen-functions",
+  "version": "1.0.0",
+  "description": "Netlify functions for KC Kitchen Square integration",
+  "main": "index.js",
+  "dependencies": {
+    "square": "^40.0.0"
+  }
+} 
