@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Check, Users, ChefHat, Calculator, X, Calendar, MapPin, Truck, Coffee, AlertCircle, Settings } from 'lucide-react';
-import AdminPanel from './AdminPanel';
+import { Check, Users, ChefHat, Calculator, X, Calendar, MapPin, Truck, Coffee, AlertCircle, Loader2 } from 'lucide-react';
 
 interface Package {
   id: string;
@@ -149,7 +148,7 @@ const additionalServices: AdditionalService[] = [
   {
     id: 'staff',
     name: 'KKC Full Service Catering Staff',
-    price: 25,
+    price: 0,
     description: 'Onsite staff available at $25/hr per staff member',
     type: 'quote_based'
   },
@@ -171,7 +170,7 @@ function App() {
   const [selectedServices, setSelectedServices] = useState<AdditionalService[]>([]);
   const [totalPrice, setTotalPrice] = useState<number>(0);
   const [showContactForm, setShowContactForm] = useState<boolean>(false);
-  const [showAdminPanel, setShowAdminPanel] = useState<boolean>(false);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [contactForm, setContactForm] = useState<ContactForm>({
     firstName: '',
     lastName: '',
@@ -313,6 +312,7 @@ function App() {
 
   const handleSubmitQuote = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSubmitting(true);
     
     try {
       // Use localhost:8888 for local development, relative URL for production
@@ -368,6 +368,8 @@ function App() {
     } catch (error) {
       console.error('Error submitting quote:', error);
       alert('There was an error submitting your quote. Please try again or contact Kaycee\'s Kitchen directly.');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -389,14 +391,6 @@ function App() {
       {/* Header */}
       <div className="bg-gradient-to-r from-orange-600 to-orange-700 text-white py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative">
-          {/* Admin Button */}
-          <button
-            onClick={() => setShowAdminPanel(!showAdminPanel)}
-            className="absolute top-4 right-4 bg-white bg-opacity-20 hover:bg-opacity-30 text-white p-2 rounded-lg transition-all duration-200"
-            title="Admin Panel"
-          >
-            <Settings className="w-6 h-6" />
-          </button>
           
           <div className="flex justify-center mb-4">
             <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center">
@@ -779,7 +773,8 @@ function App() {
             {isSelectionComplete && (
               <button 
                 onClick={() => setShowContactForm(true)}
-                className="w-full bg-gradient-to-r from-orange-600 to-orange-700 hover:from-orange-700 hover:to-orange-800 text-white font-bold py-4 px-8 rounded-lg text-lg transition-all duration-200 transform hover:scale-105"
+                disabled={isSubmitting}
+                className="w-full bg-gradient-to-r from-orange-600 to-orange-700 hover:from-orange-700 hover:to-orange-800 text-white font-bold py-4 px-8 rounded-lg text-lg transition-all duration-200 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
               >
                 Get Quote & Contact Kaycee's Kitchen
               </button>
@@ -799,7 +794,8 @@ function App() {
                 </h3>
                 <button
                   onClick={() => setShowContactForm(false)}
-                  className="text-gray-400 hover:text-gray-600 transition-colors"
+                  disabled={isSubmitting}
+                  className="text-gray-400 hover:text-gray-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <X className="w-6 h-6" />
                 </button>
@@ -815,9 +811,10 @@ function App() {
                     <input
                       type="text"
                       required
+                      disabled={isSubmitting}
                       value={contactForm.firstName}
                       onChange={(e) => handleContactFormChange('firstName', e.target.value)}
-                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-orange-500 focus:ring-2 focus:ring-orange-200 outline-none transition-all duration-200"
+                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-orange-500 focus:ring-2 focus:ring-orange-200 outline-none transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                     />
                   </div>
                   <div>
@@ -827,9 +824,10 @@ function App() {
                     <input
                       type="text"
                       required
+                      disabled={isSubmitting}
                       value={contactForm.lastName}
                       onChange={(e) => handleContactFormChange('lastName', e.target.value)}
-                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-orange-500 focus:ring-2 focus:ring-orange-200 outline-none transition-all duration-200"
+                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-orange-500 focus:ring-2 focus:ring-orange-200 outline-none transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                     />
                   </div>
                 </div>
@@ -840,9 +838,10 @@ function App() {
                   </label>
                   <input
                     type="text"
+                    disabled={isSubmitting}
                     value={contactForm.companyName}
                     onChange={(e) => handleContactFormChange('companyName', e.target.value)}
-                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-orange-500 focus:ring-2 focus:ring-orange-200 outline-none transition-all duration-200"
+                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-orange-500 focus:ring-2 focus:ring-orange-200 outline-none transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                   />
                 </div>
 
@@ -854,9 +853,10 @@ function App() {
                     <input
                       type="email"
                       required
+                      disabled={isSubmitting}
                       value={contactForm.email}
                       onChange={(e) => handleContactFormChange('email', e.target.value)}
-                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-orange-500 focus:ring-2 focus:ring-orange-200 outline-none transition-all duration-200"
+                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-orange-500 focus:ring-2 focus:ring-orange-200 outline-none transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                     />
                   </div>
                   <div>
@@ -866,10 +866,11 @@ function App() {
                     <input
                       type="tel"
                       required
+                      disabled={isSubmitting}
                       placeholder="(555) 123-4567"
                       value={contactForm.phone}
                       onChange={(e) => handleContactFormChange('phone', e.target.value)}
-                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-orange-500 focus:ring-2 focus:ring-orange-200 outline-none transition-all duration-200"
+                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-orange-500 focus:ring-2 focus:ring-orange-200 outline-none transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                     />
                     <p className="text-xs text-gray-500 mt-1">
                       Format: (555) 123-4567 or +1-555-123-4567
@@ -892,9 +893,10 @@ function App() {
                       <input
                         type="date"
                         required
+                        disabled={isSubmitting}
                         value={contactForm.eventDate}
                         onChange={(e) => handleContactFormChange('eventDate', e.target.value)}
-                        className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-orange-500 focus:ring-2 focus:ring-orange-200 outline-none transition-all duration-200"
+                        className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-orange-500 focus:ring-2 focus:ring-orange-200 outline-none transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                       />
                     </div>
                     <div>
@@ -904,9 +906,10 @@ function App() {
                       <input
                         type="time"
                         required
+                        disabled={isSubmitting}
                         value={contactForm.time}
                         onChange={(e) => handleContactFormChange('time', e.target.value)}
-                        className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-orange-500 focus:ring-2 focus:ring-orange-200 outline-none transition-all duration-200"
+                        className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-orange-500 focus:ring-2 focus:ring-orange-200 outline-none transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                       />
                     </div>
                   </div>
@@ -919,10 +922,11 @@ function App() {
                     <input
                       type="text"
                       required
+                      disabled={isSubmitting}
                       placeholder="Enter full address"
                       value={contactForm.location}
                       onChange={(e) => handleContactFormChange('location', e.target.value)}
-                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-orange-500 focus:ring-2 focus:ring-orange-200 outline-none transition-all duration-200"
+                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-orange-500 focus:ring-2 focus:ring-orange-200 outline-none transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                     />
                   </div>
 
@@ -932,25 +936,27 @@ function App() {
                       Service Type *
                     </label>
                     <div className="grid grid-cols-2 gap-4">
-                      <label className="flex items-center p-4 border-2 border-gray-300 rounded-lg cursor-pointer hover:border-orange-300 transition-colors">
+                      <label className={`flex items-center p-4 border-2 border-gray-300 rounded-lg cursor-pointer hover:border-orange-300 transition-colors ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}>
                         <input
                           type="radio"
                           name="deliveryMethod"
                           value="delivery"
+                          disabled={isSubmitting}
                           checked={contactForm.deliveryMethod === 'delivery'}
                           onChange={(e) => handleContactFormChange('deliveryMethod', e.target.value as 'delivery' | 'pickup')}
-                          className="text-orange-600 focus:ring-orange-500"
+                          className="text-orange-600 focus:ring-orange-500 disabled:opacity-50"
                         />
                         <span className="ml-3 font-medium text-gray-900">Delivery</span>
                       </label>
-                      <label className="flex items-center p-4 border-2 border-gray-300 rounded-lg cursor-pointer hover:border-orange-300 transition-colors">
+                      <label className={`flex items-center p-4 border-2 border-gray-300 rounded-lg cursor-pointer hover:border-orange-300 transition-colors ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}>
                         <input
                           type="radio"
                           name="deliveryMethod"
                           value="pickup"
+                          disabled={isSubmitting}
                           checked={contactForm.deliveryMethod === 'pickup'}
                           onChange={(e) => handleContactFormChange('deliveryMethod', e.target.value as 'delivery' | 'pickup')}
-                          className="text-orange-600 focus:ring-orange-500"
+                          className="text-orange-600 focus:ring-orange-500 disabled:opacity-50"
                         />
                         <span className="ml-3 font-medium text-gray-900">Pickup</span>
                       </label>
@@ -1002,15 +1008,24 @@ function App() {
                   <button
                     type="button"
                     onClick={() => setShowContactForm(false)}
-                    className="flex-1 px-6 py-3 border-2 border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 transition-colors duration-200"
+                    disabled={isSubmitting}
+                    className="flex-1 px-6 py-3 border-2 border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    className="flex-1 px-6 py-3 bg-gradient-to-r from-orange-600 to-orange-700 hover:from-orange-700 hover:to-orange-800 text-white font-semibold rounded-lg transition-all duration-200"
+                    disabled={isSubmitting}
+                    className="flex-1 px-6 py-3 bg-gradient-to-r from-orange-600 to-orange-700 hover:from-orange-700 hover:to-orange-800 text-white font-semibold rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
                   >
-                    Submit Quote Request
+                    {isSubmitting ? (
+                      <>
+                        <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                        Submitting...
+                      </>
+                    ) : (
+                      'Submit Quote Request'
+                    )}
                   </button>
                 </div>
               </form>
@@ -1019,8 +1034,6 @@ function App() {
         </div>
       )}
 
-      {/* Admin Panel */}
-      {showAdminPanel && <AdminPanel />}
     </div>
   );
 }

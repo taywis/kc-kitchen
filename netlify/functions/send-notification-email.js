@@ -97,7 +97,7 @@ async function sendNotificationEmail(invoiceData, customerData, orderData) {
         <div class="highlight urgent">
             <h3>🚨 ACTION REQUIRED</h3>
             <p><strong>Please review and approve this invoice:</strong></p>
-            <a href="https://squareup.com/dashboard/sales/invoices/${invoiceData.id}" class="action-button" target="_blank">
+            <a href="https://squareup.com/dashboard/invoices/${invoiceData.id}" class="action-button" target="_blank">
                 📋 View Invoice in Square Dashboard
             </a>
             <p style="margin-top: 15px;"><strong>Next Steps:</strong></p>
@@ -111,9 +111,9 @@ async function sendNotificationEmail(invoiceData, customerData, orderData) {
         
         <div class="section">
             <h3>🔗 Quick Links</h3>
-            <p><a href="https://squareup.com/dashboard/sales/invoices/${invoiceData.id}" target="_blank">📋 View Invoice in Square</a></p>
-            <p><a href="https://squareup.com/dashboard/customers/${customerData?.id || ''}" target="_blank">👤 View Customer Profile</a></p>
-            <p><a href="https://squareup.com/dashboard/orders/${orderData?.id || ''}" target="_blank">📦 View Order Details</a></p>
+            <p><a href="https://squareup.com/dashboard/invoices/${invoiceData.id}" target="_blank">📋 View Invoice in Square</a></p>
+            <p><a href="https://squareup.com/dashboard/customers/directory/${customerData?.id || ''}" target="_blank">👤 View Customer Profile</a></p>
+            <p><a href="https://squareup.com/dashboard/orders/overview/${orderData?.id || ''}" target="_blank">📦 View Order Details</a></p>
         </div>
         
         <div class="footer">

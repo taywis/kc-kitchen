@@ -39,4 +39,9 @@
 [[redirects]]
   from = "/publish-invoice"
   to = "/.netlify/functions/publish-invoice"
+  status = 200
+
+[[redirects]]
+  from = "/list-locations"
+  to = "/.netlify/functions/list-locations"
   status = 200 
