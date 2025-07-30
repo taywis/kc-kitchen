@@ -127,7 +127,7 @@ async function sendNotificationEmail(invoiceData, customerData, orderData) {
     
     const emailData = {
       from: 'notifications@kcc.wgmtx.net', // Use your verified domain
-      to: ['hosting@wgmtx.com'], // Now we can send to any email address
+      to: ['hosting@wgmtx.com', 'KayceeKitchen@gmail.com'], // Send to both recipients
       subject: `New Catering Invoice: ${customerName} - ${eventDate}`,
       html: emailContent
     };

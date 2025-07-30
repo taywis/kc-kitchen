@@ -63,9 +63,11 @@ function createOrderLineItems(selectedPackage, guestCount, selectedEntrees, sele
   // Add additional services
   additionalServices.forEach(service => {
     if (service.price > 0) {
+      // Check if service is per-person or per-event
+      const quantity = service.type === 'per_person' ? guestCount.toString() : '1';
       lineItems.push({
         name: service.name,
-        quantity: '1', // Services are typically per event, not per guest
+        quantity: quantity,
         basePriceMoney: {
           amount: BigInt(service.price * 100),
           currency: 'USD'
