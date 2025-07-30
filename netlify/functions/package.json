@@ -1,9 +1,16 @@
 {
-  "name": "kc-kitchen-functions",
+  "name": "netlify-functions",
   "version": "1.0.0",
-  "description": "Netlify functions for KC Kitchen Square integration",
+  "description": "Netlify functions for KC Kitchen",
   "main": "index.js",
   "dependencies": {
+    "resend": "^3.5.0",
     "square": "^40.0.0"
-  }
-} 
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

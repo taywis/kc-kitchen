@@ -9,4 +9,34 @@
 [[redirects]]
   from = "/api/*"
   to = "/.netlify/functions/:splat"
+  status = 200
+
+[[redirects]]
+  from = "/create-invoice"
+  to = "/.netlify/functions/create-invoice"
+  status = 200
+
+[[redirects]]
+  from = "/test-square"
+  to = "/.netlify/functions/test-square"
+  status = 200
+
+[[redirects]]
+  from = "/list-orders"
+  to = "/.netlify/functions/list-orders"
+  status = 200
+
+[[redirects]]
+  from = "/list-invoices"
+  to = "/.netlify/functions/list-invoices"
+  status = 200
+
+[[redirects]]
+  from = "/update-order"
+  to = "/.netlify/functions/update-order"
+  status = 200
+
+[[redirects]]
+  from = "/publish-invoice"
+  to = "/.netlify/functions/publish-invoice"
   status = 200 

@@ -315,7 +315,23 @@ function App() {
     e.preventDefault();
     
     try {
-      const response = await fetch('/.netlify/functions/create-invoice', {
+      // Use localhost:8888 for local development, relative URL for production
+      const apiUrl = window.location.hostname === 'localhost' 
+        ? 'http://localhost:8888/.netlify/functions/create-invoice'
+        : '/.netlify/functions/create-invoice';
+        
+      console.log('Making request to:', apiUrl);
+      console.log('Request data:', {
+        package: selectedPackage,
+        guestCount,
+        entrees: selectedEntrees,
+        sides: selectedSides,
+        additionalServices: selectedServices,
+        totalPrice,
+        contactInfo: contactForm
+      });
+        
+      const response = await fetch(apiUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -331,11 +347,21 @@ function App() {
         })
     });
     
+      console.log('Response status:', response.status);
+      console.log('Response headers:', Object.fromEntries(response.headers.entries()));
+      
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('Error response body:', errorText);
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
       const result = await response.json();
+      console.log('Response result:', result);
       
       if (result.success) {
         alert('Thank you for your quote request! A draft invoice has been created and Kaycee\'s Kitchen will contact you within 24 hours.');
-    setShowContactForm(false);
+        setShowContactForm(false);
       } else {
         alert('There was an error creating your quote. Please try again or contact Kaycee\'s Kitchen directly.');
       }
@@ -840,10 +866,14 @@ function App() {
                     <input
                       type="tel"
                       required
+                      placeholder="(555) 123-4567"
                       value={contactForm.phone}
                       onChange={(e) => handleContactFormChange('phone', e.target.value)}
                       className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-orange-500 focus:ring-2 focus:ring-orange-200 outline-none transition-all duration-200"
                     />
+                    <p className="text-xs text-gray-500 mt-1">
+                      Format: (555) 123-4567 or +1-555-123-4567
+                    </p>
                   </div>
                 </div>
 
